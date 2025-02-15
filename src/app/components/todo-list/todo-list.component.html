@@ -1,0 +1,139 @@
+<div class="todo-board">
+    <div
+        *ngIf="(todos$ | async)?.length === 0"
+        [ngClass]="
+            creatingCategoryIndex === 1
+                ? 'category-item'
+                : 'create-category-btn'
+        "
+        type="button"
+        (click)="creatingCategoryIndex = 1"
+    >
+        <span *ngIf="creatingCategoryIndex !== 1">
+            + Eine Liste hinzufügen
+        </span>
+        <div *ngIf="creatingCategoryIndex === 1">
+            <input
+                type="text"
+                placeholder="Listennamen eingeben..."
+                [(ngModel)]="categoryInputTexts[creatingCategoryIndex]"
+                class="category-input"
+            />
+            <div class="button-container">
+                <button
+                    class="item-add-button"
+                    (click)="addTodo($event, creatingCategoryIndex)"
+                >
+                    Liste hinzufügen
+                </button>
+                <button
+                    class="cancel-button"
+                    (click)="
+                        cancelCreateCategory($event, creatingCategoryIndex)
+                    "
+                >
+                    X
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div *ngIf="todos$ | async as todos" class="category-container">
+        <div *ngFor="let todo of todos; let i = index" class="category-item">
+            <div class="category-edit-container">
+                <input
+                    type="text"
+                    placeholder="{{ todo.category }}"
+                    [(ngModel)]="categoryInputTexts[i]"
+                    class="category-edit-input"
+                />
+                <button
+                    class="cancel-button"
+                    (click)="
+                        cancelCreateCategory($event, creatingCategoryIndex)
+                    "
+                >
+                    ...
+                </button>
+            </div>
+
+            <div
+                *ngFor="let card of todo.cards; let j = index"
+                class="card-item"
+                (click)="openModal(todo, card)"
+            >
+                <span class="card-item-text">{{ card.text }}</span>
+            </div>
+
+            <div *ngIf="addCardIndex === todo.id" class="card-input-container">
+                <input
+                    type="text"
+                    placeholder="Titel eingeben oder Link einfügen"
+                    [(ngModel)]="cardTexts[todo.id]"
+                    class="card-input"
+                />
+                <div class="button-container">
+                    <button
+                        class="item-add-button"
+                        (click)="addCardToCategory(todo.id)"
+                    >
+                        Karte hinzufügen
+                    </button>
+                    <button class="cancel-button" (click)="closeCardInput()">
+                        X
+                    </button>
+                </div>
+            </div>
+
+            <button
+                *ngIf="addCardIndex !== todo.id"
+                (click)="openCardInput(todo.id)"
+                class="card-add-button"
+            >
+                + Eine Karte hinzufügen
+            </button>
+        </div>
+
+        <div
+            *ngIf="(todos$ | async)?.length !== 0"
+            [ngClass]="
+                creatingCategoryIndex === todos.length
+                    ? 'category-item'
+                    : 'create-category-btn'
+            "
+            type="button"
+            (click)="creatingCategoryIndex = todos.length"
+        >
+            <span *ngIf="creatingCategoryIndex !== todos.length"
+                >+ Eine Liste hinzufügen</span
+            >
+            <div *ngIf="creatingCategoryIndex === todos.length">
+                <input
+                    type="text"
+                    placeholder="Listennamen eingeben..."
+                    [(ngModel)]="categoryInputTexts[creatingCategoryIndex + 1]"
+                    class="category-input"
+                />
+                <div class="button-container">
+                    <button
+                        class="item-add-button"
+                        (click)="addTodo($event, creatingCategoryIndex + 1)"
+                    >
+                        Liste hinzufügen
+                    </button>
+                    <button
+                        class="cancel-button"
+                        (click)="
+                            cancelCreateCategory(
+                                $event,
+                                creatingCategoryIndex + 1
+                            )
+                        "
+                    >
+                        X
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

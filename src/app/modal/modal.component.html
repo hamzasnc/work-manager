@@ -1,0 +1,56 @@
+<div class="modal-backdrop" *ngIf="modalData" (click)="close()"></div>
+
+<div class="modal-container" *ngIf="modalData">
+    <div class="modal-content">
+        <div class="modal-top-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{{ modalData.cardText }}</h5>
+                <button class="close-button" (click)="close()">X</button>
+            </div>
+
+            <div class="todo-category">
+                <span>In Liste</span>
+                <button class="category-input-button">
+                    <span type="text" class="category-input">
+                        {{ modalData.todoCategory }}
+                    </span>
+                </button>
+            </div>
+        </div>
+
+        <div class="modal-body">
+            <div class="card-description">
+                <h5>Beschreibung</h5>
+
+                <button
+                    class="description-button"
+                    *ngIf="!isEditingDescription"
+                    (click)="isEditingDescription = true"
+                >
+                    {{
+                        modalData.cardDescription ||
+                            "Detaillierte Beschreibung hinzufügen..."
+                    }}
+                </button>
+                <div *ngIf="isEditingDescription" class="editor-container">
+                    <textarea
+                        [(ngModel)]="modalData.cardDescription"
+                        placeholder="Schreiben Sie hier Ihre Beschreibung..."
+                        class="rich-text-editor"
+                    ></textarea>
+                    <div class="editor-actions">
+                        <button (click)="saveDescription()" class="save-button">
+                            Speichern
+                        </button>
+                        <button
+                            (click)="isEditingDescription = false"
+                            class="save-button"
+                        >
+                            Abbrechen
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
